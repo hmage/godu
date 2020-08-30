@@ -46,7 +46,9 @@ func du(dirname string) (int64, error) {
 		if dirent.IsDir() && !dirent.IsSymlink() {
 			dirsize, err := du(fullname)
 			if err != nil {
-				return fullsize, err
+				// if one of directories doesn't have permissions, it's not fatal, just continue
+				log.Printf("Failed to scan directory %s: %s", fullname, err)
+				continue
 			}
 			out(dirsize, fullname)
 			fullsize += dirsize
